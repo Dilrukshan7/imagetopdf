@@ -37,6 +37,7 @@ const config = {
   pdfAutoGenerate: readBoolean('PDF_AUTO_GENERATE', false),
   pdfAutoTimeoutSeconds: readInteger('PDF_AUTO_TIMEOUT_SECONDS', 10, { min: 1 }),
   botName: process.env.BOT_NAME || 'Private PDF Bot',
+  qrViewToken: process.env.QR_VIEW_TOKEN || '',
   nodeEnv: process.env.NODE_ENV || 'development',
   processGroups: readBoolean('PROCESS_GROUPS', false),
   processOwnMessages: readBoolean('PROCESS_OWN_MESSAGES', false),

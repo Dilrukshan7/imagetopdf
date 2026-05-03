@@ -15,6 +15,8 @@ services:
         value: 3000
       - key: BOT_NAME
         value: Private PDF Bot
+      - key: QR_VIEW_TOKEN
+        sync: false
       - key: PUPPETEER_CACHE_DIR
         value: /opt/render/project/.cache/puppeteer
       - key: ALLOWED_NUMBERS

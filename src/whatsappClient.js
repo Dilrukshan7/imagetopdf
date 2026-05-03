@@ -1,7 +1,9 @@
 const qrcode = require('qrcode-terminal');
+const QRCode = require('qrcode');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
 const logger = require('./logger');
+const { clearLatestQr, setLatestQr } = require('./qrStore');
 
 function resolvePuppeteerExecutablePath() {
   if (process.env.PUPPETEER_EXECUTABLE_PATH) return process.env.PUPPETEER_EXECUTABLE_PATH;
@@ -46,16 +48,30 @@ function createWhatsAppClient() {
     puppeteer: buildPuppeteerOptions()
   });
 
-  client.on('qr', (qr) => {
+  client.on('qr', async (qr) => {
     logger.info('QR code received. Scan it with WhatsApp on your phone.');
     qrcode.generate(qr, { small: true });
+
+    try {
+      const dataUrl = await QRCode.toDataURL(qr, {
+        errorCorrectionLevel: 'M',
+        margin: 2,
+        width: 320
+      });
+      setLatestQr(dataUrl);
+      logger.info('QR code is also available at /qr if QR_VIEW_TOKEN is configured.');
+    } catch (error) {
+      logger.warn({ err: error }, 'Failed to create browser QR code.');
+    }
   });
 
   client.on('ready', () => {
+    clearLatestQr();
     logger.info('WhatsApp client is ready.');
   });
 
   client.on('authenticated', () => {
+    clearLatestQr();
     logger.info('WhatsApp client authenticated.');
   });
 

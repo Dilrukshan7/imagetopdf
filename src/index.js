@@ -7,6 +7,7 @@ const logger = require('./logger');
 const SessionManager = require('./sessionManager');
 const { createImagesPdf, createPdfFileName } = require('./pdfService');
 const { createWhatsAppClient } = require('./whatsappClient');
+const { getLatestQr } = require('./qrStore');
 const {
   normalizeWhatsAppNumber,
   maskNumber,
@@ -48,6 +49,52 @@ function startHealthServer() {
       status: 'ok',
       bot: 'running'
     });
+  });
+
+  app.get('/qr', (req, res) => {
+    if (!config.qrViewToken) {
+      res.status(404).send('QR viewer is disabled.');
+      return;
+    }
+
+    if (req.query.token !== config.qrViewToken) {
+      res.status(404).send('Not found.');
+      return;
+    }
+
+    const qr = getLatestQr();
+    if (!qr.dataUrl) {
+      res
+        .status(200)
+        .send('<!doctype html><title>WhatsApp QR</title><p>No active QR code. The bot may already be authenticated. Restart the service if you need a new QR.</p>');
+      return;
+    }
+
+    const createdAt = new Date(qr.createdAt).toISOString();
+    res.status(200).send(`<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="refresh" content="20">
+    <title>WhatsApp QR</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f7f8; color: #111; }
+      main { text-align: center; background: #fff; padding: 24px; border: 1px solid #ddd; border-radius: 8px; max-width: 420px; }
+      img { width: 320px; max-width: 100%; height: auto; image-rendering: pixelated; }
+      p { line-height: 1.4; }
+      small { color: #555; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Scan WhatsApp QR</h1>
+      <img src="${qr.dataUrl}" alt="WhatsApp login QR code">
+      <p>Open WhatsApp on your phone, go to Linked devices, and scan this QR.</p>
+      <small>Generated at ${createdAt}. This page refreshes every 20 seconds.</small>
+    </main>
+  </body>
+</html>`);
   });
 
   return app.listen(config.port, () => {
