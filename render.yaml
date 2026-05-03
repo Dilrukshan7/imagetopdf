@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: private-whatsapp-image-pdf-bot
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: BOT_NAME
+        value: Private PDF Bot
+      - key: ALLOWED_NUMBERS
+        sync: false
+      - key: ALLOWED_CHAT_IDS
+        sync: false
+      - key: MAX_IMAGES_PER_PDF
+        value: 30
+      - key: MAX_IMAGE_SIZE_MB
+        value: 10
+      - key: SESSION_TIMEOUT_SECONDS
+        value: 900
+      - key: PDF_AUTO_GENERATE
+        value: false
+      - key: PDF_AUTO_TIMEOUT_SECONDS
+        value: 10
+      - key: PROCESS_GROUPS
+        value: false
+      - key: PROCESS_OWN_MESSAGES
+        value: false
+      - key: RATE_LIMIT_WINDOW_SECONDS
+        value: 60
+      - key: RATE_LIMIT_MAX_MESSAGES
+        value: 30
