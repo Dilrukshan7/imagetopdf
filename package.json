@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "install:browser": "npx puppeteer browsers install chrome",
     "check": "node --check src/index.js && node --check src/config.js && node --check src/whatsappClient.js && node --check src/sessionManager.js && node --check src/pdfService.js && node --check src/security.js && node --check src/logger.js"
   },
   "keywords": [
@@ -23,6 +24,7 @@
     "helmet": "^8.0.0",
     "pdf-lib": "^1.17.1",
     "pino": "^9.6.0",
+    "puppeteer": "^24.42.0",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.33.5",
     "whatsapp-web.js": "^1.26.0"

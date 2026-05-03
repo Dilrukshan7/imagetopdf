@@ -3,8 +3,21 @@ const { Client, LocalAuth } = require('whatsapp-web.js');
 
 const logger = require('./logger');
 
+function resolvePuppeteerExecutablePath() {
+  if (process.env.PUPPETEER_EXECUTABLE_PATH) return process.env.PUPPETEER_EXECUTABLE_PATH;
+  if (process.env.CHROME_BIN) return process.env.CHROME_BIN;
+
+  try {
+    const puppeteer = require('puppeteer');
+    return puppeteer.executablePath();
+  } catch (error) {
+    logger.debug({ err: error }, 'Could not resolve Puppeteer executable path automatically.');
+    return '';
+  }
+}
+
 function buildPuppeteerOptions() {
-  const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH || process.env.CHROME_BIN;
+  const executablePath = resolvePuppeteerExecutablePath();
   const options = {
     headless: true,
     args: [
