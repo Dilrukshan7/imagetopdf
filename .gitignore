@@ -1,0 +1,26 @@
+node_modules/
+.env
+.env.*
+!.env.example
+
+# WhatsApp Web auth/session data. This is sensitive.
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Logs and local runtime files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files. Images/PDFs should not be stored here by the bot.
+tmp/
+temp/
+.cache/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
